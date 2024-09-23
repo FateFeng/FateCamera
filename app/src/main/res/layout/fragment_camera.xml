@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
+    tools:context=".ui.camera.CameraFragment">
+
+    <com.feng.libcamera.render.CameraGLSurfaceView
+        android:id="@+id/view_camera"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_margin="100dp" />
+
+    <TextView
+        android:id="@+id/fps_tv"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:layout_margin="100dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/camera_ui_container"
+        android:layoutDirection="ltr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Camera control and gallery buttons -->
+        <ImageButton
+            android:id="@+id/camera_switch_button"
+            android:layout_width="@dimen/round_button_medium"
+            android:layout_height="@dimen/round_button_medium"
+            android:layout_marginBottom="@dimen/margin_xlarge"
+            android:layout_marginStart="@dimen/margin_small"
+            android:padding="@dimen/spacing_small"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_switch"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageButton
+            android:id="@+id/camera_capture_button"
+            android:layout_width="@dimen/round_button_large"
+            android:layout_height="@dimen/round_button_large"
+            android:layout_marginBottom="@dimen/shutter_button_margin"
+            android:scaleType="fitCenter"
+            android:background="@drawable/ic_shutter"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/photo_view_button"
+            android:layout_width="@dimen/round_button_medium"
+            android:layout_height="@dimen/round_button_medium"
+            android:layout_marginBottom="@dimen/margin_xlarge"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:padding="@dimen/spacing_large"
+            android:scaleType="fitCenter"
+            android:background="@drawable/ic_outer_circle"
+            app:srcCompat="@drawable/ic_photo"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

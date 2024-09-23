@@ -1,0 +1,59 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'androidx.camera.core'
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 25
+        targetSdk 32
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+
+    implementation 'com.google.android.material:material:1.7.0'
+    compileOnly 'com.google.auto.value:auto-value:1.10.4'
+    annotationProcessor 'com.google.auto.value:auto-value:1.10.4'
+    implementation 'com.google.auto.value:auto-value-annotations:1.10.4'
+    implementation 'androidx.exifinterface:exifinterface:1.2.0'
+    implementation 'androidx.concurrent:concurrent-futures:1.1.0'
+
+    def camerax_version = '1.1.0-beta01'
+    // CameraX Camera2 extensions
+    implementation ("androidx.camera:camera-camera2:$camerax_version") {
+        exclude group: 'androidx.camera', module: 'camera-core'
+    }
+    // CameraX Lifecycle library
+    implementation ("androidx.camera:camera-lifecycle:$camerax_version") {
+        exclude group: 'androidx.camera', module: 'camera-core'
+    }
+    // CameraX View class
+    implementation ("androidx.camera:camera-view:$camerax_version") {
+        exclude group: 'androidx.camera', module: 'camera-core'
+    }
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}

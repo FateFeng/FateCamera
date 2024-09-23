@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.login.LoginFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/camera1_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="open Camera with Version 1" />
+
+        <Button
+            android:id="@+id/camera2_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="open Camera with Version 2" />
+
+        <Button
+            android:id="@+id/cameraX_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="open Camera with Version X" />
+
+        <Button
+            android:id="@+id/cameraNDK_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="open Camera with Version NDK" />
+
+        <Button
+            android:id="@+id/cameraUVC_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="open Camera with Version UVC" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="100dp" />
+
+    <TextView
+        android:id="@+id/notice_tv"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="100dp" />
+
+</RelativeLayout>
