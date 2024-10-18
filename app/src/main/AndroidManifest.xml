@@ -31,7 +31,6 @@
             android:name=".ui.MainActivity"
             android:clearTaskOnLaunch="true"
             android:icon="@mipmap/ic_launcher"
-            android:screenOrientation="landscape"
             android:rotationAnimation="seamless"
             android:resizeableActivity="true"
             android:configChanges="orientation|screenLayout|screenSize|smallestScreenSize"

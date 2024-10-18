@@ -26,7 +26,7 @@ abstract class CameraHelper {
     open fun initCamera() {
     }
 
-    abstract fun getCameraIds(): MutableList<String>
+    abstract fun getCameraIds(): MutableList<String>?
 
     open fun setupCamera(screenWidth: Int, screenHeight: Int, cameraId: String) {
         mScreemWidth = screenWidth

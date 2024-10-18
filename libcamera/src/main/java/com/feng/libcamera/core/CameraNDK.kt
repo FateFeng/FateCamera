@@ -31,16 +31,20 @@ class CameraNDK(mContext: BaseFragment?) : CameraHelper(mContext) {
     var mSurface: Surface? = null
     var mGLSurfaceView: CameraGLSurfaceView? = null
     var isOpened: Boolean = true
+    var numCamera: Int = 0
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun initCamera() {
         super.initCamera()
         cameraManager = mBaseFragment!!.requireContext()
             .getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        mCameraDevice = createCamera()
     }
 
-    override fun getCameraIds(): MutableList<String> {
+    override fun getCameraIds(): MutableList<String>? {
         //临时 懒得弄暂时
+        if (numCamera == 0) {
+            return null;
+        }
         var cameraIds: MutableList<String> = cameraManager!!.cameraIdList.toMutableList()
 
         for (cameraId in cameraIds) {
@@ -69,7 +73,7 @@ class CameraNDK(mContext: BaseFragment?) : CameraHelper(mContext) {
     override fun openCamera(onCameraOpenListener: OnCameraOpenListener) {
         try {
             // 创建相机对象，这个对象由CPP维护
-            mCameraDevice = createCamera(mCameraId!!)
+            openCamera(mCameraDevice!!, mCameraId!!)
             if (isOpened) {
                 onCameraOpenListener.onOpen()
             } else {
@@ -179,7 +183,8 @@ class CameraNDK(mContext: BaseFragment?) : CameraHelper(mContext) {
      * A native method that is implemented by the 'tcamera' native library,
      * which is packaged with this application.
      */
-    private external fun createCamera(cameraId: String): Long
+    private external fun createCamera(): Long
+    private external fun openCamera(ndkCamera: Long, cameraId: String)
     private external fun updatePreviewSize(
         ndkCamera: Long,
         width: Int,

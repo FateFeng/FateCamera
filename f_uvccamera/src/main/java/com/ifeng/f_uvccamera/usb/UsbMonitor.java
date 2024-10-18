@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 
 import com.ifeng.f_uvccamera.callback.ConnectCallback;
 import com.ifeng.f_uvccamera.config.CameraConfig;
@@ -84,7 +85,13 @@ public class UsbMonitor implements IMonitor {
                 mConnectCallback.onGranted(usbDevice, true);
             }
         } else {
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_DEVICE_PERMISSION), 0);
+            Intent intent = new Intent(ACTION_USB_DEVICE_PERMISSION);
+            PendingIntent pendingIntent = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+            } else {
+                pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
+            }
             mUsbManager.requestPermission(usbDevice, pendingIntent);
         }
     }
@@ -211,7 +218,7 @@ public class UsbMonitor implements IMonitor {
             switch (intent.getAction()) {
                 case UsbManager.ACTION_USB_DEVICE_ATTACHED:
                     LogUtil.i("onAttached");
-                    mConnectCallback.onAttached(usbDevice);
+                    //mConnectCallback.onAttached(usbDevice);
                     break;
 
                 case ACTION_USB_DEVICE_PERMISSION:

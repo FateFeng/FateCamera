@@ -184,7 +184,7 @@ namespace MyCamera {
         ACameraCaptureSession *_captureSession;
 
     public:
-        NDKCamera(std::string request_cameraId);
+        NDKCamera();
 
         ~NDKCamera();
 
@@ -194,7 +194,8 @@ namespace MyCamera {
          * @return
          */
         int EnumerateCamera();
-        bool isOpened();
+        int OpenCamera(std::string request_cameraId);
+        bool IsOpened();
 
         /**
          * 获取相机状态监听器

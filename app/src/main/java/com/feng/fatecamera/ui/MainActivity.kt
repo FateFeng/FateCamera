@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.provider.Settings
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +37,17 @@ class MainActivity : BaseActivity() {
     private val cameraFragment: CameraFragment = CameraFragment.newInstance()
 
     override fun init() {
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        val dm = DisplayMetrics()
+        windowManager?.defaultDisplay?.getMetrics(dm)
+
+        var w = dm.widthPixels
+        var h = dm.heightPixels
+
+        if (w > h) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

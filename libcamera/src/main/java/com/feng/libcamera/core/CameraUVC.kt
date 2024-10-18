@@ -51,14 +51,16 @@ class CameraUVC(mContext: BaseFragment?) : CameraHelper(mContext) {
                 }
 
                 override fun onConnected(usbDevice: UsbDevice?) {
-                    //openCamera()
+                    openCamera()
                 }
 
                 override fun onCameraOpened() {
+                    onCameraOpenListener?.onOpen()
                     //startPreview()
                 }
 
                 override fun onDetached(usbDevice: UsbDevice?) {
+                    onCameraOpenListener?.onFail()
                     closeCamera()
                 }
             })
@@ -72,10 +74,6 @@ class CameraUVC(mContext: BaseFragment?) : CameraHelper(mContext) {
 
     override fun setupCamera(screenWidth: Int, screenHeight: Int, cameraId: String) {
         super.setupCamera(screenWidth, screenHeight, cameraId)
-        mCameraDevice!!.checkDevice()
-        if (!isCameraOpen()) {
-            return
-        }
         //mCameraDevice?.(screenWidth, screenHeight)
     }
 
@@ -83,13 +81,14 @@ class CameraUVC(mContext: BaseFragment?) : CameraHelper(mContext) {
     override fun openCamera(onCameraOpenListener: OnCameraOpenListener) {
         try {
             this.onCameraOpenListener = onCameraOpenListener
-            val result = mCameraDevice!!.openCamera()
+            mCameraDevice!!.checkDevice()
+            //val result = mCameraDevice!!.openCamera()
             //getCurrentCamera()?.setCameraStateCallBack(this)
-            if (result == 0) {
+            /*if (result == 0) {
                 onCameraOpenListener.onOpen()
             } else {
                 onCameraOpenListener.onFail()
-            }
+            }*/
         } catch (ex: CameraAccessException) {
             onCameraOpenListener.onFail()
         }
@@ -151,10 +150,9 @@ class CameraUVC(mContext: BaseFragment?) : CameraHelper(mContext) {
     }
 
     override fun releaseCamera() {
-        if (!isCameraOpen()) {
-            return
+        if (isCameraOpen()) {
+            mCameraDevice?.stopPreview()
         }
-        mCameraDevice?.stopPreview()
         mCameraDevice?.closeCamera()
     }
 

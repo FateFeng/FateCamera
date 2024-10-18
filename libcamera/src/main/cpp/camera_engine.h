@@ -69,12 +69,14 @@ public:
      * @param w 期望的相机宽度
      * @param h 期望的相机高度
      */
-    CameraEngine(JNIEnv *env, jobject instance, jstring cameraId);
+    CameraEngine(JNIEnv *env, jobject instance);
 
     /**
      * 释放全局引用和_camera对象
      */
     ~CameraEngine();
+
+    void OpenCamera(JNIEnv *env, jobject instance, jstring cameraId);
 
     /**
      * 创建相机会话

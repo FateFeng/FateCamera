@@ -34,29 +34,46 @@ jint setField_bool(JNIEnv *env, jobject java_obj, const char *field_name, jboole
     return val;
 }
 
-CameraEngine::CameraEngine(JNIEnv *env, jobject instance, jstring cameraId) :
+/**
+ * @param env: this param should not be null
+ * @param bullet_obj: this param should not be null
+ */
+jint __setField_int(JNIEnv *env, jobject java_obj, jclass clazz, const char *field_name, jint val) {
+    jfieldID id = env->GetFieldID(clazz, field_name, "I");
+    if (LIKELY(id))
+        env->SetIntField(java_obj, id, val);
+    else {
+        LOGE("__setField_bool:field '%s' not found", field_name);
+        env->ExceptionClear();	// clear java.lang.NoSuchFieldError exception
+    }
+    return val;
+}
+
+/**
+ * set the value into int field
+ * @param env: this param should not be null
+ * @param java_obj: this param should not be null
+ * @param field_name
+ * @params val
+ */
+jint setField_int(JNIEnv *env, jobject java_obj, const char *field_name, jint val) {
+    jclass clazz = env->GetObjectClass(java_obj);
+    __setField_int(env, java_obj, clazz, field_name, val);
+    env->DeleteLocalRef(clazz);
+    return val;
+}
+
+CameraEngine::CameraEngine(JNIEnv *env, jobject instance) :
         _env(env),
         _java_instance(instance),
         _request_width(640),
         _request_height(480),
         _surface(nullptr),
         _preview_state(false) {
-    char* _cameraId  = (char*) env->GetStringUTFChars(cameraId, 0);
-    _request_cameraId = std::string(_cameraId);
-    // 重置兼容的分辨率
-    memset(&_compatible_camera_resolution, 0, sizeof(_compatible_camera_resolution));
     // 初始化一个相机对象
-    _camera = new MyCamera::NDKCamera(_request_cameraId);
-    if (_camera->isOpened()) {
-        _camera->MatchCaptureSizeRequest(
-                _request_width,
-                _request_height,
-                &_compatible_camera_resolution,
-                nullptr
-        );
-    }
-    setField_bool(env, instance, "isOpened", _camera->isOpened());
-    env->ReleaseStringUTFChars(cameraId, _cameraId);
+    _camera = new MyCamera::NDKCamera();
+
+    setField_int(env, instance, "numCamera", _camera->EnumerateCamera());
 }
 
 CameraEngine::~CameraEngine() {
@@ -72,6 +89,29 @@ CameraEngine::~CameraEngine() {
         delete _camera_image_reader;
         _camera_image_reader = nullptr;
     }
+}
+
+void CameraEngine::OpenCamera(JNIEnv *env, jobject instance, jstring cameraId) {
+    if (_camera == nullptr) {
+        return;
+    }
+    char* _cameraId  = (char*) env->GetStringUTFChars(cameraId, 0);
+    _request_cameraId = std::string(_cameraId);
+    // 重置兼容的分辨率
+    memset(&_compatible_camera_resolution, 0, sizeof(_compatible_camera_resolution));
+
+    _camera->OpenCamera(_request_cameraId);
+    if (_camera->IsOpened()) {
+        _camera->MatchCaptureSizeRequest(
+                _request_width,
+                _request_height,
+                &_compatible_camera_resolution,
+                nullptr
+        );
+    }
+    setField_bool(env, instance, "isOpened", _camera->IsOpened());
+
+    env->ReleaseStringUTFChars(cameraId, _cameraId);
 }
 
 void CameraEngine::CreateCameraSession(jobject surface) {

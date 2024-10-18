@@ -14,9 +14,19 @@
  */
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_feng_libcamera_core_CameraNDK_createCamera(JNIEnv *env, jobject thiz, jstring cameraId) {
-    auto *cam_eng = new CameraEngine(env, thiz, cameraId);
+Java_com_feng_libcamera_core_CameraNDK_createCamera(JNIEnv *env, jobject thiz) {
+    auto *cam_eng = new CameraEngine(env, thiz);
     return reinterpret_cast<jlong>(cam_eng);
+}
+
+/**
+ * 创建相机对象
+ */
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_feng_libcamera_core_CameraNDK_openCamera(JNIEnv *env, jobject thiz, jlong ndk_camera, jstring cameraId) {
+    auto *cam_eng = reinterpret_cast<CameraEngine *> (ndk_camera);
+    cam_eng->OpenCamera(env, thiz, cameraId);
 }
 
 extern "C"

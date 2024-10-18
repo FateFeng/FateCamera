@@ -138,7 +138,7 @@ namespace MyCamera {
             .onCameraUnavailable = OnCameraUnavailable,
     };
 
-    NDKCamera::NDKCamera(std::string request_cameraId) {
+    NDKCamera::NDKCamera() {
         _valid = false;
         // 重置缓冲区
         this->_requests.resize(CAPTURE_REQUEST_COUNT);
@@ -147,43 +147,6 @@ namespace MyCamera {
         this->_cameras.clear();
 
         _cameraMgr = ACameraManager_create();
-        // 遍历所有的相机并记录信息到CameraId中去
-        int num = this->EnumerateCamera();
-        if (num > 0) {
-            _activeCameraId = request_cameraId; // 默认选择后置主摄
-        } else {
-            return;
-        }
-
-        // 打开相机，同时添加相机设备监听器（设备是否断开连接或者发生故障）
-        static ACameraDevice_StateCallbacks cameraDeviceListener = {
-                .context = this,
-                .onDisconnected = nullptr,
-                .onError = nullptr,
-        };
-        ACameraManager_openCamera(_cameraMgr, _activeCameraId.c_str(), &cameraDeviceListener,
-                                  &_cameras[_activeCameraId].device);
-
-        // 设置相机可用时的回调监听器
-        cameraMgrListener.context = this;
-        ACameraManager_registerAvailabilityCallback(_cameraMgr,
-                                                    reinterpret_cast<const ACameraManager_AvailabilityCallbacks *>
-                                                    (&cameraMgrListener));
-
-        // 初始化相机控制 通过修改 metadata 控制相机
-        ACameraMetadata *metadataObj;
-        ACameraManager_getCameraCharacteristics(_cameraMgr, _activeCameraId.c_str(), &metadataObj);
-
-        // 设置相机属性 这里设置的曝光时间 单位 ns
-        ACameraMetadata_const_entry val = {
-                0,
-        };
-        camera_status_t status;
-
-        status = ACameraMetadata_getConstEntry(
-                metadataObj, ACAMERA_CONTROL_AVAILABLE_VIDEO_STABILIZATION_MODES, &val);
-
-        _valid = true;
     }
 
     bool NDKCamera::MatchCaptureSizeRequest(int32_t requestWidth, int32_t requestHeight,
@@ -346,7 +309,50 @@ namespace MyCamera {
         return num;
     }
 
-    bool NDKCamera::isOpened() {
+    int NDKCamera::OpenCamera(std::string request_cameraId){
+        if(IsOpened()) {
+            LOG_WARN("why open again?");
+            return -1;
+        }
+        // 遍历所有的相机并记录信息到CameraId中去
+        int num = this->EnumerateCamera();
+        if (num > 0) {
+            _activeCameraId = request_cameraId; // 默认选择后置主摄
+        } else {
+            return -1;
+        }
+        // 打开相机，同时添加相机设备监听器（设备是否断开连接或者发生故障）
+        static ACameraDevice_StateCallbacks cameraDeviceListener = {
+                .context = this,
+                .onDisconnected = nullptr,
+                .onError = nullptr,
+        };
+        ACameraManager_openCamera(_cameraMgr, _activeCameraId.c_str(), &cameraDeviceListener,
+                                  &_cameras[_activeCameraId].device);
+
+        // 设置相机可用时的回调监听器
+        cameraMgrListener.context = this;
+        ACameraManager_registerAvailabilityCallback(_cameraMgr,
+                                                    reinterpret_cast<const ACameraManager_AvailabilityCallbacks *>
+                                                    (&cameraMgrListener));
+
+        // 初始化相机控制 通过修改 metadata 控制相机
+        ACameraMetadata *metadataObj;
+        ACameraManager_getCameraCharacteristics(_cameraMgr, _activeCameraId.c_str(), &metadataObj);
+
+        // 设置相机属性 这里设置的曝光时间 单位 ns
+        ACameraMetadata_const_entry val = {
+                0,
+        };
+        camera_status_t status;
+
+        status = ACameraMetadata_getConstEntry(
+                metadataObj, ACAMERA_CONTROL_AVAILABLE_VIDEO_STABILIZATION_MODES, &val);
+
+        _valid = true;
+    }
+
+    bool NDKCamera::IsOpened() {
         return _valid;
     }
 
